@@ -3,7 +3,6 @@ def iterate_letter_to_right (letter, right_position)
   return letter if letter == " " || !letter_decimal_value.between?(97, 122)
 
   abecedary_position = letter_decimal_value - 97
-  puts (abecedary_position + right_position) % 25
   new_abecedary_position = (abecedary_position + right_position) % 25
   (97 + new_abecedary_position).chr
 end
@@ -15,5 +14,3 @@ def encrypt(text, right_position)
   upcase_indexes.each { |index| new_letter_list[index] = new_letter_list[index].upcase }
   new_letter_list.join("")
 end
-
-puts encrypt("What a string!", 5)
