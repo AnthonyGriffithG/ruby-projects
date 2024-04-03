@@ -1,28 +1,32 @@
 class Board
-  attr_reader :finished, :previous_moves, :available_moves
+  attr_reader :last_player_won, :previous_moves, :available_moves
 
   def initialize
     @available_moves = [1,2,3,4,5,6,7,8,9]
     @previous_moves = []
-    @victory = false
+    @last_player_won = false
   end
 
   def make_move(position_number)
     @previous_moves << @available_moves.delete(position_number)
   end
 
-  def victory
+  def is_winning_move
     winning_patterns = [
       [1, 2, 3], [4, 5, 6], [7, 8, 9], # Rows
       [1, 4, 7], [2, 5, 8], [3, 6, 9], # Columns
       [1, 5, 9], [3, 5, 7]             # Diagonals
     ]
 
-    winning_patterns.each do |pattern|
+    first_player_moved_last = @previous_moves.length.even?
+      last_player_moves = @previous_moves.filter do | play |
+        index = @previous_moves.find_index play
+        first_player_moved_last ? index.odd? : index.even?
+      end
 
-      last_player_moves = @previous_moves.length.odd? ? @previous_moves.select.with_index { |_, index| index.even? } : @previous_moves.select.with_index { |_, index| index.odd? }
+    winning_patterns.each do |pattern|
       if (pattern - last_player_moves).empty?
-        @victory = true
+        @last_player_won = true
       end
     end
 
@@ -56,19 +60,19 @@ class Game
 
 
   def start
-    until @board.victory || @board.available_moves.length == 0
+    until @board.last_player_won || @board.available_moves.length == 0
       @board.previous_moves.length.even? ? p('Player 1 turn') : p('Player 2 turn')
       play = gets.chomp.to_i
       if @board.available_moves.include? play
         @board.make_move play
         @board.display_board
-        @board.victory
+        @board.is_winning_move
       else
         p "Invalid move, the available moves are #{@board.available_moves.to_s}"
       end
     end
 
-    if @board.victory
+    if @board.last_player_won
       winner = @board.previous_moves.length.odd? ? @player_1 : @player_2
       p "The winner is: #{winner}!"
     else
