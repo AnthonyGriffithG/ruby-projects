@@ -1,11 +1,8 @@
-
-
-require_relative "player.rb"
-require_relative "board.rb"
+require_relative "player"
+require_relative "board"
 
 include BoardModule
 include PlayerModule
-
 
 module GameModule
   class Game
@@ -16,36 +13,32 @@ module GameModule
       start
     end
   
-  
     def start
       current_player = @player_1
-  
-      until @board.last_player_won || @board.available_moves.length == 0
+
+      until @board.last_player_won || @board.available_moves.empty?
         p "#{current_player.name}'s turn (#{current_player.symbol})"
         play = gets.chomp.to_i
-        if @board.available_moves.include? play
-          @board.make_move play
-          @board.display_board
-          @board.is_winning_move
+        
+        if current_player.play(@board, play)
           current_player = next_player(current_player)
         else
           p "Invalid move, the available moves are #{@board.available_moves.to_s}"
         end
       end
-  
+
       if @board.last_player_won
-        winner = current_player == @player_1 ? @player_2.name : @player_1.name
+        winner = next_player(current_player).name
         p "The winner is: #{winner}!"
       else
         p "The game ends in a draw!"
       end
     end
-  
+
     private
-  
+
     def next_player(current_player)
       current_player == @player_1 ? @player_2 : @player_1
     end
   end
 end
-
