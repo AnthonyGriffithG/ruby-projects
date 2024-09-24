@@ -21,6 +21,7 @@ module GameModule
         play = gets.chomp.to_i
         
         if current_player.play(@board, play)
+          @board.is_winning_move
           current_player = next_player(current_player)
         else
           p "Invalid move, the available moves are #{@board.available_moves.to_s}"

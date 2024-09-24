@@ -11,7 +11,6 @@ module PlayerModule
       if board.available_moves.include?(position_number)
         board.make_move(position_number)
         board.display_board
-        board.is_winning_move
         true
       else
         false
